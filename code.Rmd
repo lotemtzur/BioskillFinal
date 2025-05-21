@@ -2,6 +2,7 @@
 ```{r}
 rm(list=ls())
 library(readr)
+library(glue)
 # read this file "C:\Users\lotem\Documents\uni\courses\Y2S2\bioskills\exs\EX3\bus_rides_data_2024.csv"
 # install.packages("tidyverse")
 library(tidyverse)
@@ -37,26 +38,178 @@ for (col in colnames(data)) {
 df <- read.csv("../somatic_alterations_from_tumors.csv", stringsAsFactors = FALSE)
 
 # Loop through each column
-for (col_name in names(df)) {
-  cat("Column:", col_name, "\n")
-  
-  # Get unique values (excluding NA)
-  unique_vals <- unique(na.omit(df[[col_name]]))
-  num_unique <- length(unique_vals)
-  
-  cat("Number of unique values:", num_unique, "\n")
-  
-  # Print up to 30 values
-  print(head(unique_vals, 30))
-  
-  cat("-----\n")
-}
+# for (col_name in names(df)) {
+#   cat("Column:", col_name, "\n")
+#   
+#   # Get unique values (excluding NA)
+#   unique_vals <- unique(na.omit(df[[col_name]]))
+#   num_unique <- length(unique_vals)
+#   
+#   cat("Number of unique values:", num_unique, "\n")
+#   
+#   # Print up to 30 values
+#   print(head(unique_vals, 30))
+#   
+#   cat("-----\n")
+# }
+
 
 
 
 ```
 
 ```{r}
+
+top_genes <- names(sort(table(df$Hugo_Symbol), decreasing = TRUE))[1:50]
+df_top <- df[df$Hugo_Symbol %in% top_genes, ]
+
+
+# טען ggplot2 אם עוד לא טענת
+library(ggplot2)
+
+# צייר scatter plot
+ggplot(df_top, aes(x = Hugo_Symbol, y = Diagnosis.Age, color = Variant_Type)) +
+  scale_x_discrete(expand = expansion(mult = c(0.01, 0.01))) + 
+  geom_point(position = position_jitterdodge(jitter.width =  0.4), alpha=0.5) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(title = "Scatter Plot of Gene vs Age", x = "Gene", y = "Age")
+
+```
+
+
+
+```{r}
+gene_number <- 20
+
+
+# top_stages <- names(sort(table(df$Tumor.Stage), decreasing = TRUE))[1:4]
+top_cancers <- names(sort(table(df$Cancer.Type), decreasing = TRUE))[1:3]
+
+# df_top <- df[df$Hugo_Symbol %in% top_genes, ]
+# df_top <- df_top[df_top$Tumor.Stage %in% top_stages, ]
+df_top <- df[df$Cancer.Type %in% top_cancers, ]
+
+df_grouped <- df_top %>%
+  group_by(Hugo_Symbol, Diagnosis.Age, Variant_Type, Cancer.Type) %>%
+  summarise(count = n(), .groups = "drop")
+df_grouped <- df_grouped %>%
+  filter(Variant_Type %in% c("SNP", "DEL", "INS"))
+
+df_grouped <- df_grouped %>% 
+  mutate(Variant_Type = fct_reorder(Variant_Type, count, .fun = sum, .desc = TRUE))
+
+top_genes <- names(sort(table(df$Hugo_Symbol), decreasing = TRUE))[1:gene_number]
+df_grouped <- df_grouped[df_grouped$Hugo_Symbol %in% top_genes, ]
+
+
+# df_grouped$Hugo_Symbol <- factor(df_grouped$Hugo_Symbol, levels = top_genes)
+
+ggplot(df_grouped, aes(x = Hugo_Symbol, y = Diagnosis.Age, size = count, color = Cancer.Type)) +
+  scale_size_continuous(range = c(1, 10)) +
+  geom_jitter(width = 0.3, alpha = 0.7) +  
+  theme_minimal() +
+  scale_color_brewer(palette = "Set1") +
+  # scale_color_manual(values = c("#377eb8", "#4daf4a", "#e41a1c")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14)) +
+  labs(title = glue("Mutated Genes by Age (Top {gene_number} genes)"),
+       x = "Gene (Hugo_Symbol)", y = "Age", size = "Sample Count") +
+  facet_wrap(~Variant_Type, nrow=3)
+  # make the labs font bigger
+  
+
+
+
+
+
+```
+
+```{r}
+
+ggplot(df_grouped, aes(x = Hugo_Symbol, y = Diagnosis.Age, size = count, color = Variant_Type)) +
+  scale_size_continuous(range = c(1, 10)) +
+  geom_jitter(width = 0.3, alpha = 0.7) +  
+  theme_minimal() +
+  scale_color_brewer(palette = "Dark2") +
+  scale_color_manual(values = c("#377eb8", "#4daf4a", "#e41a1c", "#984ea3", "#ff7f00")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14)) +
+  labs(title = glue("Mutated Genes by Age (Top {gene_number} genes)"),
+       x = "Gene (Hugo_Symbol)", y = "Age", size = "Sample Count")
+
+
+```
+
+```{r}
+df <- read.csv("../somatic_alterations_from_tumors.csv", stringsAsFactors = FALSE)
+
+df_smoke_data <- df %>% 
+  filter(Smoke.Status != "Unknown", Variant_Type %in% c("SNP", "DEL", "INS")) %>%
+  # filter(Cancer.Type %in% names(sort(table(df$Cancer.Type), decreasing = TRUE))[1:gene_number]) %>%
+  group_by(Cancer.Type, Smoke.Status) %>%
+  summarise(count = n(), .groups = "drop") 
+# top_genes <- names(sort(table(df$Hugo_Symbol), decreasing = TRUE))[1:gene_number]
+# df_grouped <- df_grouped[df_grouped$Hugo_Symbol %in% top_genes, ]
+
+ggplot(df_smoke_data, aes(x = Cancer.Type, y = count, fill = Smoke.Status)) +
+  geom_col(position = "dodge")
+
+# print how many are smokers
+# smokers_count <- nrow(df_smoke_data[df_smoke_data$Smoke.Status == "Smoker", ])
+# non_smokers_count <- nrow(df_smoke_data[df_smoke_data$Smoke.Status == "Nonsmoker", ])
+
+```
+
+
+
+
+
+
+```{r}
+
+gene_number <- 20
+
+# 
+# # top_stages <- names(sort(table(df$Tumor.Stage), decreasing = TRUE))[1:4]
+# top_cancers <- names(sort(table(df$Cancer.Type), decreasing = TRUE))[1:3]
+# 
+# # df_top <- df[df$Hugo_Symbol %in% top_genes, ]
+# # df_top <- df_top[df_top$Tumor.Stage %in% top_stages, ]
+# df_top <- df[df$Cancer.Type %in% top_cancers, ]
+# 
+# df_grouped <- df_top %>%
+#   group_by(Hugo_Symbol, Diagnosis.Age, Sm) %>%
+#   summarise(count = n(), .groups = "drop")
+# df_grouped <- df_grouped %>%
+#   filter(Variant_Type %in% c("SNP", "DEL", "INS"))
+# 
+# df_grouped <- df_grouped %>% 
+#   mutate(Variant_Type = fct_reorder(Variant_Type, count, .fun = sum, .desc = TRUE))
+
+
+
+
+
+top_genes <- names(sort(table(df$Hugo_Symbol), decreasing = TRUE))[1:gene_number]
+df_filtered <- df[df$Hugo_Symbol %in% top_genes, ]
+df_filtered %>% 
+  filter(Smoke.Status != "Unknown", Variant_Type %in% c("SNP", "DEL", "INS")) %>%
+  group_by(Hugo_Symbol, Diagnosis.Age, Sex) %>%
+  summarise(count = n(), .groups = "drop") -> df_filtered
+
+df_filtered$Hugo_Symbol <- factor(df_filtered$Hugo_Symbol, levels = top_genes)
+
+ggplot(df_filtered, aes(x = Hugo_Symbol, y = Diagnosis.Age, size = count)) +
+  geom_boxplot(aes(fill = Sex), alpha = 0.5, outlier.shape = NA) +
+  theme_minimal() +
+  scale_color_brewer(palette = "Set1") +
+  # scale_color_manual(values = c("#377eb8", "#4daf4a", "#e41a1c")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14)) +
+  labs(title = glue("Mutated Genes by Age (Top {gene_number} genes)"),
+       x = "Gene (Hugo_Symbol)", y = "Age", size = "Sample Count") 
+  # facet_wrap(~Variant_Type, nrow=3)
+  # make the labs font bigger
+  
+
 
 
 ```
