@@ -1,0 +1,265 @@
+Column: PATIENT_ID 
+Number of unique values: 10194 
+ [1] "Patient0001" "Patient0002" "Patient0003" "Patient0004"
+ [5] "Patient0005" "Patient0006" "Patient0007" "Patient0008"
+ [9] "Patient0009" "Patient0010" "Patient0011" "Patient0012"
+[13] "Patient0013" "Patient0014" "Patient0015" "Patient0016"
+[17] "Patient0017" "Patient0018" "Patient0019" "Patient0020"
+[21] "Patient0021" "Patient0022" "Patient0023" "Patient0024"
+[25] "Patient0025" "Patient0026" "Patient0027" "Patient0028"
+[29] "Patient0029" "Patient0030"
+-----
+Column: Cancer.Type 
+Number of unique values: 25 
+ [1] "Colorectal Carcinoma"                 
+ [2] "Liver Hepatocellular Carcinoma"       
+ [3] "Soft Tissue Sarcoma"                  
+ [4] "Melanoma"                             
+ [5] "Carcinoma of Uterine Cervix"          
+ [6] "Urothelial Carcinoma"                 
+ [7] "Thymic Tumor"                         
+ [8] "Kidney Renal Cell Carcinoma"          
+ [9] "Ovarian Carcinoma"                    
+[10] "Gastric Cancer"                       
+[11] "Pancreatic Cancer"                    
+[12] "Breast Carcinoma"                     
+[13] "Extrahepatic Cholangiocarcinoma"      
+[14] "Bone Sarcoma"                         
+[15] "Esophageal Carcinoma"                 
+[16] "Small Cell Lung Cancer"               
+[17] "Cancer of Unknown Primary"            
+[18] "Head and Neck Carcinoma"              
+[19] "Intrahepatic Cholangiocarcinoma"      
+[20] "Uterine Corpus Endometrial Carcinoma" 
+[21] "Gastrointestinal Neuroendocrine Tumor"
+[22] "Non Small Cell Lung Cancer"           
+[23] "Gallbladder Carcinoma"                
+[24] "Small Bowel Carcinoma"                
+[25] "Thyroid Carcinoma"                    
+-----
+Column: Cancer.Type.Detailed 
+Number of unique values: 112 
+ [1] "Colorectal Adenocarcinoma"                 
+ [2] "Hepatocellular Carcinoma"                  
+ [3] "Gastrointestinal Stromal Tumor"            
+ [4] "Cutaneous Melanoma"                        
+ [5] "Endometrial Adenocarcinoma"                
+ [6] "Bladder Urothelial Carcinoma"              
+ [7] "Thymoma"                                   
+ [8] "Renal Clear Cell Carcinoma"                
+ [9] "High-Grade Serous Ovarian Cancer"          
+[10] "Gastric Adenocarcinoma"                    
+[11] "Pancreatic Adenocarcinoma"                 
+[12] "Breast Invasive Carcinoma"                 
+[13] "Liver Hepatocellular Carcinoma"            
+[14] "Myxoid Fibrosarcoma"                       
+[15] "Perihilar Cholangiocarcinoma"              
+[16] "Chondroblastic Osteosarcoma"               
+[17] "Esophageal Adenocarcinoma"                 
+[18] "Small Cell Lung Cancer"                    
+[19] "Melanoma Other"                            
+[20] "Cancer of Unknown Primary"                 
+[21] "Nasopharyngeal Carcinoma"                  
+[22] "Leiomyosarcoma"                            
+[23] "Esophageal Squamous Cell Carcinoma"        
+[24] "Intrahepatic Cholangiocarcinoma"           
+[25] "Uterine Corpus Endometrial Carcinoma Other"
+[26] "Extrahepatic Cholangiocarcinoma"           
+[27] "Pancreatic Neuroendocrine Tumor"           
+[28] "Lung Adenocarcinoma"                       
+[29] "Lung Squamous Cell Carcinoma"              
+[30] "Malignant Peripheral Nerve Sheath Tumor"   
+-----
+Column: Tumor.Stage 
+Number of unique values: 8 
+[1] "IV"      "II"      "III"     "I"       "Unknown" "III-IV" 
+[7] "I-II"    "0"      
+-----
+Column: Sample.Type 
+Number of unique values: 3 
+[1] "Primary"    "Metastasis" "Recurrent" 
+-----
+Column: Sex 
+Number of unique values: 2 
+[1] "Female" "Male"  
+-----
+Column: Diagnosis.Age 
+Number of unique values: 92 
+ [1] 67 75 45 70 53 55 68 69 65 46 57 52 72 49 38 43 58 61 51 77
+[21] 83 66 73 56 33 74 63 34 44 64
+-----
+Column: Smoke.Status 
+Number of unique values: 3 
+[1] "Unknown"   "Nonsmoker" "Smoker"   
+-----
+Column: TMB..nonsynonymous. 
+Number of unique values: 159 
+ [1]  0.33333333  0.30000000  0.50000000  7.26666667  0.16666667
+ [6]  0.23333333  5.73333333  0.20000000  0.10000000  0.06666667
+[11]  0.26666667  0.00000000  0.13333333  0.36666667  0.03333333
+[16]  0.70000000  0.40000000  0.43333333  1.13333333  0.56666667
+[21]  1.30000000  1.36666667  3.96666667  0.63333333  0.76666667
+[26]  0.80000000  0.46666667  0.86666667 12.90000000  0.73333333
+-----
+Column: Hugo_Symbol 
+Number of unique values: 480 
+ [1] "KMT2C"        "KRAS"         "SOX9"         "APC"         
+ [5] "QKI"          "FBXW7"        "PTPN11"       "GLI1"        
+ [9] "ATM"          "EPHB1"        "RARA"         "TP53"        
+[13] "PREX2"        "ETV5"         "GNAS-AS1"     "AMER1"       
+[17] "LRP1B"        "FAT4"         "TPMT"         "ERBB2"       
+[21] "SMAD3"        "CCND3"        "RP11-435O5.4" "GRIN2A"      
+[25] "MSH6"         "KMT2D"        "RANBP2"       "ACVR1B"      
+[29] "GLI2"         "PALB2"       
+-----
+Column: Chromosome 
+Number of unique values: 24 
+ [1] "7"  "12" "17" "5"  "6"  "4"  "11" "3"  "8"  "20" "X"  "2" 
+[13] "15" "9"  "16" "1"  "19" "10" "22" "18" "13" "14" "21" ""  
+-----
+Column: Start_Position 
+Number of unique values: 73377 
+ [1] 151836340  25398285  70119705 112128143 112175147 163836364
+ [7] 153247289 112910733  57863367 108142138  70120165 134920413
+[13] 153245512 112175609  38508182 153249384  25398284   7578406
+[19] 112116592 112175639  68992667 112173926 185766570  57415892
+[25]  63411678 141031993 126372813  25378561  18130988  37864790
+-----
+Column: End_Position 
+Number of unique values: 73175 
+ [1] 151836340  25398285  70119705 112128143 112175147 163836364
+ [7] 153247289 112910736  57863367 108142138  70120165 134920413
+[13] 153245512 112175609  38508184 153249384  25398284   7578406
+[19] 112116592 112175639  68992667 112173926 185766570  57415892
+[25]  63411678 141031993 126372813  25378561  18130988  37864790
+-----
+Column: Consequence 
+Number of unique values: 55 
+ [1] "missense_variant"                                              
+ [2] "frameshift_variant"                                            
+ [3] "stop_gained,splice_region_variant"                             
+ [4] "stop_gained"                                                   
+ [5] "intron_variant"                                                
+ [6] "splice_region_variant,intron_variant"                          
+ [7] "inframe_deletion"                                              
+ [8] "intron_variant,non_coding_transcript_variant"                  
+ [9] "missense_variant,splice_region_variant"                        
+[10] "downstream_gene_variant"                                       
+[11] "splice_region_variant,synonymous_variant"                      
+[12] "synonymous_variant"                                            
+[13] "splice_acceptor_variant"                                       
+[14] "upstream_gene_variant"                                         
+[15] "inframe_insertion"                                             
+[16] "splice_donor_variant"                                          
+[17] ""                                                              
+[18] "splice_acceptor_variant,intron_variant"                        
+[19] "inframe_deletion,splice_region_variant"                        
+[20] "frameshift_variant,splice_region_variant"                      
+[21] "5_prime_UTR_variant"                                           
+[22] "splice_donor_variant,coding_sequence_variant,intron_variant"   
+[23] "splice_acceptor_variant,coding_sequence_variant,intron_variant"
+[24] "protein_altering_variant"                                      
+[25] "start_lost"                                                    
+[26] "stop_lost"                                                     
+[27] "splice_region_variant,5_prime_UTR_variant"                     
+[28] "splice_acceptor_variant,coding_sequence_variant"               
+[29] "stop_gained,frameshift_variant"                                
+[30] "start_lost,5_prime_UTR_variant"                                
+-----
+Column: Variant_Type 
+Number of unique values: 7 
+[1] "SNP" "DEL" "INS" ""    "DNP" "TNP" "ONP"
+-----
+Column: SNP_event 
+Number of unique values: 2999 
+ [1] "C>T"                                         
+ [2] "C>A"                                         
+ [3] "C>-"                                         
+ [4] "G>T"                                         
+ [5] "G>A"                                         
+ [6] "TTTC>-"                                      
+ [7] "G>-"                                         
+ [8] "T>C"                                         
+ [9] "AAG>-"                                       
+[10] "T>G"                                         
+[11] "A>C"                                         
+[12] "->TGTA"                                      
+[13] "TCT>-"                                       
+[14] "G>C"                                         
+[15] "A>T"                                         
+[16] "A>-"                                         
+[17] "->G"                                         
+[18] "A>G"                                         
+[19] "->T"                                         
+[20] "->A"                                         
+[21] "T>-"                                         
+[22] "TAAAAAA>-"                                   
+[23] "C>G"                                         
+[24] "T>A"                                         
+[25] "->C"                                         
+[26] "CGGCCTCGT>-"                                 
+[27] "->ATGTCT"                                    
+[28] "->GGCGGCGG"                                  
+[29] "->AGACCCAACACAACTTCCTTATGATCACAAATGGGAGTTTCC"
+[30] "TGAA>-"                                      
+-----
+Column: Protein_position 
+Number of unique values: 4547 
+ [1] 4822   12  236  216 1286   47  505  488 1026  389  743  560
+[13] 1440  164  465  175  213 1450  879  464  497 4381 3548  146
+[25]  217  147  600  319  285  190
+-----
+Column: Codons 
+Number of unique values: 4200 
+ [1] "cGt/cAt"    "Ggt/Tgt"    "aCc/ac"     "Cga/Tga"   
+ [5] "Gaa/Taa"    "Gaa/Aaa"    "Cgc/Tgc"    ""          
+ [9] "Gct/Tct"    "ccG/cc"     "cGg/cAg"    "gAt/gGt"   
+[13] "Cca/ca"     "AAG/-"      "gGt/gTt"    "cGc/cAc"   
+[17] "Cag/Tag"    "aAc/aGc"    "Ttg/Gtg"    "gCa/gTa"   
+[21] "Ctt/Att"    "gaT/gaG"    "-/TGTA"     "acAGAt/act"
+[25] "cCt/cTt"    "tCc/tGc"    "Aag/Tag"    "cCg/cTg"   
+[29] "gTt/gGt"    "aCg/aTg"   
+-----
+Column: Exon_Number 
+Number of unique values: 1849 
+ [1] "57/59" "02/05" "03/03" "07/16" "16/16" "01/08" "10/12"
+ [8] ""      "11/12" "12/16" "05/09" "09/12" "05/11" "06/16"
+[15] "13/13" "02/02" "85/91" "09/17" "04/05" "09/09" "07/09"
+[22] "05/05" "06/11" "26/27" "09/13" "04/10" "31/54" "20/29"
+[29] "02/09" "05/13"
+-----
+Column: VAR_TYPE_SX 
+Number of unique values: 3 
+[1] "Substitution/Indel" "Truncation"        
+[3] ""                  
+-----
+Column: Site1_Hugo_Symbol 
+Number of unique values: 743 
+ [1] ""        "MAGI2"   "SMAD4"   "CDKN2A"  "LRP1B"   "SYNJ1"  
+ [7] "APC"     "MET"     "CNTNAP1" "AMER1"   "BCR"     "FBXW7"  
+[13] "TGFBR2"  "POLR1D"  "CDKN1A"  "ATR"     "CHD7"    "KMT2A"  
+[19] "LRP1"    "EML4"    "BRCA2"   "DNAH5"   "IRF2BP2" "CFTR"   
+[25] "MTAP"    "FGFR2"   "EGFR"    "CREBBP"  "BCL11B"  "KIF5B"  
+-----
+Column: Site2_Hugo_Symbol 
+Number of unique values: 819 
+ [1] ""          "MAGI2"     "SMAD4"     "IFT74"     "ZDHHC14"  
+ [6] "APC"       "BRAF"      "WNT16"     "LRP1B"     "BRCA1"    
+[11] "CFHR1"     "ERBB2"     "MTUS2"     "NCOA2"     "PHC2"     
+[16] "NUP107"    "ALK"       "LRP1"      "BRCA2"     "ARID1B"   
+[21] "NTRK1"     "CFTR"      "CDKN2B"    "BICC1"     "EGFR"     
+[26] "LINC00536" "DICER1"    "ST7"       "RET"       "PDGFRA"   
+-----
+Column: Event_Info 
+Number of unique values: 1507 
+ [1] ""                  "MAGI2-Intragenic"  "SMAD4-Intragenic" 
+ [4] "CDKN2A-IFT74"      "LRP1B-ZDHHC14"     "SYNJ1-APC"        
+ [7] "APC-Intragenic"    "Intergenic-BRAF"   "MET-WNT16"        
+[10] "LRP1B-Intragenic"  "CNTNAP1-BRCA1"     "AMER1-Intergenic" 
+[13] "BCR-Intergenic"    "FBXW7-Intergenic"  "TGFBR2-CFHR1"     
+[16] "POLR1D-ERBB2"      "CDKN1A-Intergenic" "CDKN2A-Intergenic"
+[19] "ATR-MTUS2"         "CHD7-NCOA2"        "KMT2A-PHC2"       
+[22] "LRP1-NUP107"       "EML4-ALK"          "LRP1-Intragenic"  
+[25] "BRCA2-Intragenic"  "DNAH5-ARID1B"      "IRF2BP2-NTRK1"    
+[28] "CFTR-Intragenic"   "MTAP-CDKN2B"       "FGFR2-BICC1"      
+-----

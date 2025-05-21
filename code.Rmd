@@ -1,0 +1,62 @@
+
+```{r}
+rm(list=ls())
+library(readr)
+# read this file "C:\Users\lotem\Documents\uni\courses\Y2S2\bioskills\exs\EX3\bus_rides_data_2024.csv"
+# install.packages("tidyverse")
+library(tidyverse)
+# install.packages("ggplot2")
+library(ggplot2)
+library(googlesheets4)
+# install.packages("RColorBrewer")
+library(RColorBrewer)
+# install.packages("plotly")
+library(plotly)
+```
+
+
+
+
+```{r}
+csv_file = "../somatic_alterations_from_tumors.csv"
+data <- read_csv(csv_file)
+# print unique values of colnames
+print(unique(colnames(data)))
+# print unique values of each column (limit to 20 values per column)
+for (col in colnames(data)) {
+  print(paste("Column:", col))
+  print(data[[col]] %>% distinct() %>% head(20))
+}
+# data
+
+```
+
+```{r}
+
+# Load the CSV file
+df <- read.csv("../somatic_alterations_from_tumors.csv", stringsAsFactors = FALSE)
+
+# Loop through each column
+for (col_name in names(df)) {
+  cat("Column:", col_name, "\n")
+  
+  # Get unique values (excluding NA)
+  unique_vals <- unique(na.omit(df[[col_name]]))
+  num_unique <- length(unique_vals)
+  
+  cat("Number of unique values:", num_unique, "\n")
+  
+  # Print up to 30 values
+  print(head(unique_vals, 30))
+  
+  cat("-----\n")
+}
+
+
+
+```
+
+```{r}
+
+
+```
