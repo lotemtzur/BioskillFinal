@@ -12,6 +12,9 @@ library(googlesheets4)
 library(RColorBrewer)
 # install.packages("plotly")
 library(plotly)
+install.packages("ggpubr")
+library(ggpubr)
+
 ```
 
 
@@ -246,13 +249,15 @@ ggplot(mutation_rate_by_smoking, aes(x = Hugo_Symbol, y = Percent, fill = Smoke.
 ```{r}
 # Nice correlation
 smoking_status_df <- df %>% filter(Smoke.Status != "Unknown")
-ggplot(smoking_status_df, aes(x = Smoke.Status, y = TMB..nonsynonymous.)) +
-  geom_boxplot(fill = "steelblue") +
-  labs(title = "Tumor Mutational Burden by Smoking Status",
-       x = "Smoking Status",
-       y = "Nonsynonymous Mutations (TMB)") +
-  theme_minimal(base_size = 14)
-
-wilcox.test(TMB..nonsynonymous. ~ Smoke.Status, data = smoking_status_df)
-
+ggplot(smoking_status_df, aes(x = Smoke.Status, y = TMB..nonsynonymous., fill = Smoke.Status)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.7) +
+  geom_jitter(width = 0.2, size = 1, alpha = 0.3) +
+  stat_compare_means(method = "wilcox.test", label.y = max(smoking_status_df$TMB..nonsynonymous., na.rm = TRUE) * 0.95) +
+  labs(
+    title = "Tumor Mutational Burden by Smoking Status",
+    x = "Smoking Status",
+    y = "Nonsynonymous Mutation Count (TMB)"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none")
 ```
