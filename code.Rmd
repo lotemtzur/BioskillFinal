@@ -252,4 +252,7 @@ ggplot(smoking_status_df, aes(x = Smoke.Status, y = TMB..nonsynonymous.)) +
        x = "Smoking Status",
        y = "Nonsynonymous Mutations (TMB)") +
   theme_minimal(base_size = 14)
+
+wilcox.test(TMB..nonsynonymous. ~ Smoke.Status, data = smoking_status_df)
+
 ```
