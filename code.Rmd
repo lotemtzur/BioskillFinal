@@ -3,7 +3,6 @@
 rm(list=ls())
 library(readr)
 library(glue)
-# read this file "C:\Users\lotem\Documents\uni\courses\Y2S2\bioskills\exs\EX3\bus_rides_data_2024.csv"
 # install.packages("tidyverse")
 library(tidyverse)
 # install.packages("ggplot2")
@@ -19,7 +18,7 @@ library(plotly)
 
 
 ```{r}
-csv_file = "../somatic_alterations_from_tumors.csv"
+csv_file = "./somatic_alterations_from_tumors.csv"
 data <- read_csv(csv_file)
 # print unique values of colnames
 print(unique(colnames(data)))
@@ -62,6 +61,7 @@ df <- read.csv("../somatic_alterations_from_tumors.csv", stringsAsFactors = FALS
 
 top_genes <- names(sort(table(df$Hugo_Symbol), decreasing = TRUE))[1:50]
 df_top <- df[df$Hugo_Symbol %in% top_genes, ]
+colnames(df_top)
 
 
 # טען ggplot2 אם עוד לא טענת
@@ -140,7 +140,7 @@ ggplot(df_grouped, aes(x = Hugo_Symbol, y = Diagnosis.Age, size = count, color =
 ```
 
 ```{r}
-df <- read.csv("../somatic_alterations_from_tumors.csv", stringsAsFactors = FALSE)
+# df <- read.csv("./somatic_alterations_from_tumors.csv", stringsAsFactors = FALSE)
 
 df_smoke_data <- df %>% 
   filter(Smoke.Status != "Unknown", Variant_Type %in% c("SNP", "DEL", "INS")) %>%
@@ -212,4 +212,44 @@ ggplot(df_filtered, aes(x = Hugo_Symbol, y = Diagnosis.Age, size = count)) +
 
 
 
+```
+
+```{r}
+# Non significant correlation
+# Filter for key genes of interest
+key_genes <- c("TP53", "KRAS", "EGFR")
+
+mutation_rate_by_smoking <- df %>%
+  filter(Hugo_Symbol %in% key_genes & Smoke.Status != "Unknown") %>%
+  group_by(Smoke.Status, Hugo_Symbol) %>%
+  summarise(
+    Num_Patients = n_distinct(PATIENT_ID),
+    .groups = "drop"
+  ) %>%
+  group_by(Hugo_Symbol) %>%
+  mutate(
+    Percent = Num_Patients / sum(Num_Patients) * 100
+  )
+
+# Plot
+ggplot(mutation_rate_by_smoking, aes(x = Hugo_Symbol, y = Percent, fill = Smoke.Status)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  labs(
+    title = "Mutation Frequency in Key Genes by Smoking Status",
+    x = "Gene",
+    y = "Percentage of Patients with Mutation",
+    fill = "Smoking Status"
+  ) +
+  theme_minimal(base_size = 14)
+```
+
+```{r}
+# Nice correlation
+smoking_status_df <- df %>% filter(Smoke.Status != "Unknown")
+ggplot(smoking_status_df, aes(x = Smoke.Status, y = TMB..nonsynonymous.)) +
+  geom_boxplot(fill = "steelblue") +
+  labs(title = "Tumor Mutational Burden by Smoking Status",
+       x = "Smoking Status",
+       y = "Nonsynonymous Mutations (TMB)") +
+  theme_minimal(base_size = 14)
 ```
