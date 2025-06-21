@@ -26,9 +26,9 @@ data <- read_csv(csv_file)
 # print unique values of colnames
 print(unique(colnames(data)))
 # print unique values of each column (limit to 20 values per column)
-for (col in colnames(data)) {
-  print(paste("Column:", col))
-  print(data[[col]] %>% distinct() %>% head(20))
+# for (col in colnames(data)) {
+#   print(paste("Column:", col))
+#   print(data[[col]] %>% distinct() %>% head(20))
 }
 # data
 
@@ -248,7 +248,9 @@ ggplot(mutation_rate_by_smoking, aes(x = Hugo_Symbol, y = Percent, fill = Smoke.
 
 ```{r}
 # Nice correlation
-smoking_status_df <- df %>% filter(Smoke.Status != "Unknown")
+smoking_status_df <- df %>% filter(Smoke.Status != "Unknown") %>%
+  select(Smoke.Status, TMB..nonsynonymous.) %>%
+  mutate(Smoke.Status = factor(Smoke.Status, levels = c("Smoker", "Nonsmoker")))
 ggplot(smoking_status_df, aes(x = Smoke.Status, y = TMB..nonsynonymous., fill = Smoke.Status)) +
   geom_boxplot(outlier.shape = NA, alpha = 0.7) +
   geom_jitter(width = 0.2, size = 1, alpha = 0.3) +
@@ -260,4 +262,283 @@ ggplot(smoking_status_df, aes(x = Smoke.Status, y = TMB..nonsynonymous., fill = 
   ) +
   theme_minimal(base_size = 14) +
   theme(legend.position = "none")
+```
+
+```{r}
+
+# ONLY NON SMALL LUNG CANCER 
+
+# Nice correlation
+smoking_status_df <- df %>% filter(Smoke.Status != "Unknown" & `Cancer.Type` %in% c("Non Small Cell Lung Cancer")) %>%
+  select(Smoke.Status, TMB..nonsynonymous.) %>%
+  mutate(Smoke.Status = factor(Smoke.Status, levels = c("Smoker", "Nonsmoker")))
+
+ggplot(smoking_status_df, aes(x = Smoke.Status, y = TMB..nonsynonymous., fill = Smoke.Status)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.7) +
+  # geom_jitter(width = 0.2, size = 1, alpha = 0.3) +
+  stat_compare_means(method = "wilcox.test", label.y = max(smoking_status_df$TMB..nonsynonymous., na.rm = TRUE) * 0.95) +
+  labs(
+    title = "Tumor Mutational Burden by Smoking Status",
+    x = "Smoking Status",
+    y = "Nonsynonymous Mutation Count (TMB)"
+  ) +
+    scale_fill_manual(
+    values = c("Smoker" = "#d73027",    # אדום חזק - צבע אזהרה
+               "Nonsmoker" = "#1a9850") # ירוק נעים
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none")
+```
+
+```{r}
+
+# ONLY SMALL LUNG CANCER 
+
+# Nice correlation
+smoking_status_df <- df %>% filter(Smoke.Status != "Unknown" & `Cancer.Type` %in% c("Small Cell Lung Cancer")) %>%
+  select(Smoke.Status, TMB..nonsynonymous.) %>%
+  mutate(Smoke.Status = factor(Smoke.Status, levels = c("Smoker", "Nonsmoker")))
+ggplot(smoking_status_df, aes(x = Smoke.Status, y = TMB..nonsynonymous., fill = Smoke.Status)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.7) +
+  geom_jitter(width = 0.2, size = 1, alpha = 0.3) +
+  stat_compare_means(method = "wilcox.test", label.y = max(smoking_status_df$TMB..nonsynonymous., na.rm = TRUE) * 0.95) +
+  labs(
+    title = "Tumor Mutational Burden by Smoking Status",
+    x = "Smoking Status",
+    y = "Nonsynonymous Mutation Count (TMB)"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none")
+```
+
+
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# קריאה לקובץ
+data <- read.csv("./somatic_alterations_from_tumors.csv")
+
+# יצירת טבלה מסוכמת
+summary_df <- data %>% filter(Smoke.Status != "Unknown") %>%
+  group_by(`Cancer.Type`, `Smoke.Status`) %>%
+  summarise(mean_TMB = mean(TMB..nonsynonymous., na.rm = TRUE)) %>%
+  ungroup()
+
+# ציור Heatmap
+ggplot(summary_df, aes(x = `Smoke.Status`, y = `Cancer.Type`, fill = mean_TMB)) +
+  geom_tile(color = "white") +
+  scale_fill_viridis_c(name = "Mean TMB") +
+  theme_minimal() +
+  labs(title = "Mean TMB by Cancer Type and Smoking Status",
+       x = "Smoke Status",
+       y = "Cancer Type") +
+  theme(axis.text.y = element_text(size = 8))
+
+
+
+
+```
+
+
+```{r}
+
+table(data$Cancer.Type[data$Cancer.Type %in% c("Small Cell Lung Cancer", "Non Small Cell Lung Cancer")])
+
+
+```
+
+
+
+```{r}
+# HEATMAP BY TMP - cancer type and chromosome
+
+summary_df <- data %>%
+  group_by(Cancer.Type, Chromosome) %>%
+  summarise(TMB_count = n()) %>%
+  filter(!is.na(Chromosome)) %>%
+  ungroup()
+
+# fill with 0 non existing combinations
+summary_df <- summary_df %>%
+  complete(Cancer.Type, Chromosome, fill = list(TMB_count = 0))
+
+ordered_chr <- c(as.character(1:22), "X")
+data$Chromosome <- factor(data$Chromosome, levels = ordered_chr)
+
+
+
+# ציור heatmap
+ggplot(summary_df, aes(x = Chromosome, y = Cancer.Type, fill = TMB_count)) +
+  geom_tile(color = "white") +
+  scale_fill_viridis_c(name = "TMB Count") +
+  theme_minimal() +
+  labs(title = "Heatmap of TMB Count by Cancer Type and Chromosome",
+       x = "Chromosome",
+       y = "Cancer Type") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        axis.text.y = element_text(size = 8))
+
+```
+
+
+```{r}
+
+
+library(ggplot2)
+library(dplyr)
+
+# קריאת הקובץ
+data <- read.csv("somatic_alterations_from_tumors.csv")
+
+# מציאת 20 הגנים הכי שכיחים
+top_genes <- data %>%
+  count(Hugo_Symbol, sort = TRUE) %>%
+  slice_head(n = 20) %>%
+  pull(Hugo_Symbol)
+
+# סינון הנתונים רק לאותם גנים
+filtered_data <- data %>%
+  filter(Hugo_Symbol %in% top_genes)
+
+# טבלה מסוכמת: כמה מופעים יש לכל סוג סרטן ולכל גן
+summary_df <- filtered_data %>%
+  group_by(Cancer.Type, Hugo_Symbol) %>%
+  summarise(TMB_count = n()) %>%
+  ungroup()
+
+# ציור heatmap
+ggplot(summary_df, aes(x = Hugo_Symbol, y = Cancer.Type, fill = TMB_count)) +
+  geom_tile(color = "white") +
+  scale_fill_viridis_c(name = "TMB Count") +
+  theme_minimal() +
+  labs(title = "TMB Count by Cancer Type and Top 20 Mutated Genes",
+       x = "Gene (Hugo Symbol)",
+       y = "Cancer Type")
+
+```
+
+
+```{r}
+
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(forcats)
+library(RColorBrewer)
+
+
+# קריאת הקובץ
+data <- read.csv("somatic_alterations_from_tumors.csv")
+
+# סינון שורות עם כרומוזום חסר
+data <- data %>% filter(!is.na(Chromosome))
+
+# מיון כרומוזומים לפי סדר טבעי: 1–22 ואז X
+ordered_chr <- c(as.character(1:22), "X")
+data$Chromosome <- factor(data$Chromosome, levels = ordered_chr)
+
+# טבלה מסוכמת: מספר מוטציות לכל שילוב
+summary_df <- data %>%
+  group_by(Cancer.Type, Chromosome) %>%
+  summarise(TMB_count = n()) %>%
+  filter(!is.na(Chromosome)) %>%
+  ungroup()
+
+# השלמת כל השילובים החסרים עם 0
+summary_df <- summary_df %>%
+  complete(Cancer.Type, Chromosome, fill = list(TMB_count = 0))
+
+# מיון סוגי הסרטן לפי סכום כולל של TMB (מהגבוה לנמוך)
+summary_df <- summary_df %>%
+  group_by(Cancer.Type) %>%
+  mutate(TMB_total = sum(TMB_count)) %>%
+  ungroup() %>%
+  mutate(Cancer.Type = fct_reorder(Cancer.Type, TMB_total, .desc = TRUE))
+
+# 6. חישוב TMB הכולל לכל סוג סרטן ולמציאת הטופ 10
+top10_cancers <- summary_df %>%
+  group_by(Cancer.Type) %>%
+  summarise(TMB_total = sum(TMB_count), .groups = "drop") %>%
+  arrange(desc(TMB_total)) %>%
+  slice_head(n = 12) %>%
+  pull(Cancer.Type)
+
+# 7. סינון לטופ 10 בלבד
+summary_top10 <- summary_df %>%
+  filter(Cancer.Type %in% top10_cancers) %>%
+  # מיון Cancer.Type לפי TMB_total יורד
+  group_by(Cancer.Type) %>%
+  mutate(TMB_total = sum(TMB_count)) %>%
+  ungroup() %>%
+  mutate(Cancer.Type = fct_reorder(Cancer.Type, TMB_total, .desc = TRUE))
+
+
+# ציור Heatmap
+ggplot(summary_top10, aes(x = Chromosome, y = Cancer.Type, fill = TMB_count)) +
+  geom_tile(color = "white") +
+    # scale_fill_gradient2(name = "TMB Count",
+    #                    # low = "green",
+    #                    mid = "black",
+    #                    high = "red",
+    #                    midpoint = median(summary_top10$TMB_count)) +
+    scale_fill_distiller(
+    name = "TMB Count",
+    palette = "OrRd",
+    direction = 1,
+    limits = c(0, max(summary_top10$TMB_count, na.rm = TRUE))
+  ) +
+  # scale_fill_viridis_c(name = "TMB Count") +
+  theme_minimal() +
+  labs(title = "TMB Count by Cancer Type and Chromosome",
+       x = "Chromosome",
+       y = "Cancer Type") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        axis.text.y = element_text(size = 8))
+
+```
+
+
+
+```{r}
+# explanatory - with removing dups
+
+library(dplyr)
+library(ggplot2)
+library(ggpubr)
+
+# יצירת טבלה של חולים ייחודיים בלבד
+smoking_status_unique <- df %>%
+  filter(Smoke.Status %in% c("Smoker", "Nonsmoker"),
+         Cancer.Type == "Non Small Cell Lung Cancer") %>%
+  select(PATIENT_ID, Smoke.Status, TMB..nonsynonymous.) %>%
+  distinct(PATIENT_ID, .keep_all = TRUE) %>%
+  mutate(Smoke.Status = factor(Smoke.Status, levels = c("Smoker", "Nonsmoker")))
+
+# ציור בוקספלאט
+ggplot(smoking_status_unique, aes(x = Smoke.Status, y = TMB..nonsynonymous., fill = Smoke.Status)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.7) +
+  stat_compare_means(
+    method = "wilcox.test",
+    label.y = max(smoking_status_unique$TMB..nonsynonymous., na.rm = TRUE) * 0.95
+  ) +
+  scale_fill_manual(
+    values = c("Smoker" = "#d73027", "Nonsmoker" = "#1a9850")
+  ) +
+  labs(
+    title = "Tumor Mutational Burden by Smoking Status (Unique Patients)",
+    x = "Smoking Status",
+    y = "Nonsynonymous Mutation Count (TMB)"
+  ) +
+  theme_minimal(base_size = 14) +
+  coord_cartesian(ylim = c(0, 1.5))+
+  theme(legend.position = "none")
+
+
+smokers <- smoking_status_unique %>% filter(Smoke.Status == "Smoker") %>% pull(TMB..nonsynonymous.)
+nonsmokers <- smoking_status_unique %>% filter(Smoke.Status == "Nonsmoker") %>% pull(TMB..nonsynonymous.)
+
+wilcox.test(smokers, nonsmokers)
+
 ```

@@ -1,0 +1,104 @@
+```{r}
+
+# EXPLORATORY PLOT 
+rm(list=ls())
+library(ggpubr)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(forcats)
+library(RColorBrewer)
+
+data <- read.csv("somatic_alterations_from_tumors.csv")
+
+
+# Order Chromosome by natural order: 1–22 then X
+ordered_chr <- c(as.character(1:22), "X")
+data$Chromosome <- factor(data$Chromosome, levels = ordered_chr)
+
+
+summary_df <- data %>%
+  group_by(Cancer.Type, Chromosome) %>%
+  summarise(TMB_count = n()) %>%
+  filter(!is.na(Chromosome)) %>%
+  ungroup() %>%
+  complete(Cancer.Type, Chromosome, fill = list(TMB_count = 0)) %>%
+  group_by(Cancer.Type) %>%
+  mutate(TMB_total = sum(TMB_count)) %>%
+  ungroup() %>%
+  mutate(Cancer.Type = fct_reorder(Cancer.Type, TMB_total, .desc = TRUE))
+  
+
+# Find top 10 cancers by TMB count
+top10_cancers <- summary_df %>%
+  group_by(Cancer.Type) %>%
+  summarise(TMB_total = sum(TMB_count), .groups = "drop") %>%
+  arrange(desc(TMB_total)) %>%
+  slice_head(n = 10) %>%
+  pull(Cancer.Type)
+
+# Filter data by top 10 cancers
+summary_top10 <- summary_df %>%
+  filter(Cancer.Type %in% top10_cancers) %>%
+  group_by(Cancer.Type) %>%
+  mutate(TMB_total = sum(TMB_count)) %>%
+  ungroup() %>%
+  mutate(Cancer.Type = fct_reorder(Cancer.Type, TMB_total, .desc = TRUE))
+
+
+# Plot exploratory heatmap 
+ggplot(summary_top10, aes(x = Chromosome, y = Cancer.Type, fill = TMB_count)) +
+  geom_tile(color = "white") +
+    scale_fill_distiller(
+    name = "TMB Count",
+    palette = "OrRd",
+    direction = 1,
+    limits = c(0, max(summary_top10$TMB_count, na.rm = TRUE))
+  ) +
+  theme_minimal() +
+  labs(title = "TMB Count by Cancer Type and Chromosome",
+       x = "Chromosome",
+       y = "Cancer Type") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        axis.text.y = element_text(size = 8))
+
+```
+
+
+
+
+```{r}
+
+# EXPLANATORY PLOT
+
+data <- read.csv("somatic_alterations_from_tumors.csv")
+
+smoking_status_unique <- data %>%
+  filter(Smoke.Status %in% c("Smoker", "Nonsmoker"),
+         Cancer.Type == "Non Small Cell Lung Cancer") %>%
+  select(PATIENT_ID, Smoke.Status, TMB..nonsynonymous.) %>%
+  distinct(PATIENT_ID, .keep_all = TRUE) %>%
+  mutate(Smoke.Status = factor(Smoke.Status, levels = c("Smoker", "Nonsmoker")))
+
+ggplot(smoking_status_unique, aes(x = Smoke.Status, y = TMB..nonsynonymous., fill = Smoke.Status)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.7) +
+  stat_compare_means(
+    method = "wilcox.test",
+    label.y = max(smoking_status_unique$TMB..nonsynonymous., na.rm = TRUE) * 0.95
+  ) +
+  scale_fill_manual(
+    values = c("Smoker" = "#d73027", "Nonsmoker" = "#1a9850")
+  ) +
+  labs(
+    title = "Tumor Mutational Burden by Smoking Status (Unique Patients)",
+    x = "Smoking Status",
+    y = "Nonsynonymous Mutation Count (TMB)"
+  ) +
+  theme_minimal(base_size = 14) +
+  coord_cartesian(ylim = c(0, 1.5)) +
+  theme(legend.position = "none")
+
+```
+
+
+
