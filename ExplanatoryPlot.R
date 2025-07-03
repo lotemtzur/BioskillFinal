@@ -23,7 +23,7 @@ p <- ggplot(smoking_status_unique, aes(x = Smoke.Status, y = TMB..nonsynonymous.
     values = c("Smoker" = "#d73027", "Nonsmoker" = "#1a9850")
   ) +
   labs(
-    title = "Tumor Mutational Burden by Smoking Status (Unique Patients)",
+    title = "TMB by Smoking Status in Non Small Cell Lung Cancer (Unique Patients)",
     x = "Smoking Status",
     y = "Nonsynonymous Mutation Count (TMB)"
   ) +
